@@ -41,6 +41,25 @@ app.get("/usuarios/:id", (req, res) => {
     });
 });
 
+//Editar no banco de dados
+app.put("/usuarios/:id", (req, res) =>{
+    Usuarios.updateOne({_id: req.params.id}, req.body, (err) =>{
+        if(err) return res.status(400).json({
+            error: true,
+            message: "Erro: usuário não editado com sucesso!"
+        });
+        return res.json({
+            error: false,
+            message: "Usuário editado com sucesso!"
+        });
+    });
+});
+
+//Deletar no Banco de dados
+app.delete("/usuarios/:id", (req, res) =>{
+    Usuarios.deleteOne({_id: req.params.id}, )
+})
+
 //Gravação no banco MongoDB
 app.post("/usuarios", (req, res) => {
     var usuario = req.body;
