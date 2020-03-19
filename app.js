@@ -57,8 +57,17 @@ app.put("/usuarios/:id", (req, res) =>{
 
 //Deletar no Banco de dados
 app.delete("/usuarios/:id", (req, res) =>{
-    Usuarios.deleteOne({_id: req.params.id}, )
-})
+    Usuarios.deleteOne({_id: req.params.id}, (err) =>{
+        if(err) return res.status(400).json({
+            error: true,
+            message: "Erro: Usuário não apagado!"
+        });
+        return res.json({
+            error: false,
+            message: "Usuário apagado com sucesso!"
+        });
+    });
+});
 
 //Gravação no banco MongoDB
 app.post("/usuarios", (req, res) => {
