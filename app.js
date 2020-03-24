@@ -1,12 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 require('./models/Usuarios');
 const Usuarios = mongoose.model('usuarios');
 
+require('./models/Sobre');
+const Sobre = mongoose.model('sobre');
+
 const app = express();
 
 app.use(express.json());
+
 
 mongoose.connect('mongodb://localhost/andes', {
     useNewUrlParser: true,
@@ -42,9 +47,9 @@ app.get("/usuarios/:id", (req, res) => {
 });
 
 //Editar no banco de dados
-app.put("/usuarios/:id", (req, res) =>{
-    Usuarios.updateOne({_id: req.params.id}, req.body, (err) =>{
-        if(err) return res.status(400).json({
+app.put("/usuarios/:id", (req, res) => {
+    Usuarios.updateOne({ _id: req.params.id }, req.body, (err) => {
+        if (err) return res.status(400).json({
             error: true,
             message: "Erro: usuário não editado com sucesso!"
         });
@@ -56,9 +61,9 @@ app.put("/usuarios/:id", (req, res) =>{
 });
 
 //Deletar no Banco de dados
-app.delete("/usuarios/:id", (req, res) =>{
-    Usuarios.deleteOne({_id: req.params.id}, (err) =>{
-        if(err) return res.status(400).json({
+app.delete("/usuarios/:id", (req, res) => {
+    Usuarios.deleteOne({ _id: req.params.id }, (err) => {
+        if (err) return res.status(400).json({
             error: true,
             message: "Erro: Usuário não apagado!"
         });
@@ -85,6 +90,36 @@ app.post("/usuarios", (req, res) => {
     });
 });
 
-app.listen(8080, () => {
-    console.log("Servidor iniciado na porta 8080: http://localhost:8080")
+// CRUD da página Sobre.
+
+// Cadastrar da página Sobre
+app.post("/sobre", (req, res) => {
+    var sobre = req.body;
+    Sobre.create(req.body, (err) => {
+        if (err) return res.status(400).json({
+            error: true,
+            message: "Erro: Página Sobre não Encontrada!"
+        })
+
+        return res.json({
+            error: false,
+            message: "Usuário cadastrado com sucesso!"
+        })
+    });
 });
+
+// Visualizar da página Sobre.
+app.get("/sobre", (req, res) => {
+    Sobre.findOne({}).then((sobre) => {
+        return res.json(sobre);
+    }).catch((err) => {
+        return res.status(400).json({
+            error: true,
+            message: "Nenhum conteúdo Sobre encontrado!"
+        });
+    });
+});
+
+app.listen(8080, () => {
+        console.log("Servidor iniciado na porta 8080: http://localhost:8080")
+    });
